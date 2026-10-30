@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR Labels</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { padding-bottom: 24px; }
+    .labels { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+    .label {
+      background: #fff; border: 1.5px dashed #555; border-radius: 8px;
+      padding: 8px; text-align: center; break-inside: avoid; page-break-inside: avoid;
+    }
+    .label svg { width: 100%; height: auto; display: block; }
+    .label b { display: block; font-size: 1.4rem; font-weight: 800; }
+    .label small { color: #222; font-weight: 600; }
+    @media print {
+      @page { margin: 10mm; }
+      body { background: #fff; padding: 0; }
+      .no-print { display: none !important; }
+      #view { max-width: none; padding: 0; }
+      .labels { grid-template-columns: repeat(4, 1fr); gap: 6mm; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar no-print">
+    <a class="brand" href="./#/settings" data-icon="left">Plant Growth</a>
+    <span class="badge" data-icon="qr">พิมพ์ QR Code</span>
+  </header>
+  <main id="view">
+    <section class="panel no-print">
+      <div class="row">
+        <label class="field grow">สวน <select id="garden"></select></label>
+        <label class="field grow">ทรีตเมนต์ <select id="treatment"></select></label>
+      </div>
+      <p class="hint">สแกน QR ด้วยแอปกล้องของมือถือ จะเปิดหน้าถ่ายภาพของต้นนั้นทันที (วันที่ = วันที่สแกน)</p>
+      <div class="actions">
+        <button class="btn primary" onclick="window.print()" data-icon="printer"><span>พิมพ์</span></button>
+      </div>
+    </section>
+    <div id="labels" class="labels"></div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script>
+    (() => {
+      const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      let config = null;
+      try { config = JSON.parse(localStorage.getItem('pg_config')); } catch (e) { /* ignore */ }
+      const labels = document.getElementById('labels');
+      if (!config || !config.gardens || !config.gardens.length) {
+        labels.innerHTML = '<p>ยังไม่มีการตั้งค่าสวน — เปิดหน้าหลักขณะออนไลน์ก่อน 1 ครั้ง</p>';
+        return;
+      }
+      const selG = document.getElementById('garden');
+      const selT = document.getElementById('treatment');
+      const base = new URL('./', location.href).href;
+
+      selG.innerHTML = config.gardens.map(g => `<option value="${esc(g.id)}">${esc(g.name)}</option>`).join('');
+
+      function fillTreatments() {
+        const g = config.gardens.find(x => x.id === selG.value);
+        selT.innerHTML = '<option value="">ทั้งหมด</option>' +
+          g.treatments.map(t => `<option value="${esc(t.id)}">${esc(t.id)}</option>`).join('');
+      }
+
+      function draw() {
+        const g = config.gardens.find(x => x.id === selG.value);
+        const ts = g.treatments.filter(t => !selT.value || t.id === selT.value);
+        const out = [];
+        ts.forEach(t => {
+          for (let i = 1; i <= t.samples; i++) {
+            const sid = `${t.id}P${i}`;
+            const url = `${base}#/capture?g=${encodeURIComponent(g.id)}&t=${encodeURIComponent(t.id)}&s=${encodeURIComponent(sid)}`;
+            const qr = qrcode(0, 'M');
+            qr.addData(url);
+            qr.make();
+            out.push(`<div class="label">${qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true })}
+              <b>${esc(sid)}</b><small>${esc(g.name)}</small></div>`);
+          }
+        });
+        labels.innerHTML = out.join('');
+      }
+
+      selG.addEventListener('change', () => { fillTreatments(); draw(); });
+      selT.addEventListener('change', draw);
+      fillTreatments();
+      draw();
+    })();
+  </script>
+</body>
+</html>
