@@ -1,12 +1,15 @@
 // Service Worker — ทำให้เปิดหน้าเว็บได้แม้ไม่มีสัญญาณ
 // เมื่อแก้ไขไฟล์และ deploy ใหม่ ให้เปลี่ยนเลข VERSION
-const VERSION = 'v8';
+const VERSION = 'v10';
 const CACHE = 'pg-' + VERSION;
 const ASSETS = [
   './',
   'index.html',
   'qr.html',
+  'compose.html',
   'css/style.css',
+  'css/compose.css',
+  'js/compose.js',
   'js/config.js',
   'js/icons.js',
   'js/db.js',

@@ -1,0 +1,48 @@
+/* หน้าแต่งภาพ — ใช้ร่วมกับ style.css */
+.cmp-grid { display: grid; gap: 14px; }
+.cmp-side .panel { margin-bottom: 14px; }
+@media (min-width: 900px) {
+  .cmp-grid { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
+  .cmp-stage-col { position: sticky; top: calc(var(--top-h) + 54px + 12px); }
+}
+
+.stage-wrap { display: flex; justify-content: center; padding: 12px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--radius); box-shadow: var(--shadow); }
+.stage { position: relative; line-height: 0; background: #111; touch-action: pan-y; }
+.stage > img { display: block; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; }
+
+.ov {
+  position: absolute; cursor: move; touch-action: none; user-select: none; -webkit-user-select: none;
+  border-style: solid; border-color: #fff; border-width: 0;
+}
+.ov.sel { outline: 2px dashed var(--focus); outline-offset: 2px; }
+.ov-img { box-sizing: border-box; }
+.ov-img img { display: block; width: 100%; height: 100%; pointer-events: none; -webkit-user-drag: none; }
+.ov-text {
+  box-sizing: content-box; padding: .4em .7em; border-radius: .25em;
+  font-weight: 800; line-height: 1.25; white-space: pre;
+  font-family: "Noto Sans Thai", "Leelawadee UI", "Sarabun", Tahoma, sans-serif;
+}
+.rh {
+  display: none; position: absolute; right: -6px; bottom: -6px; width: 24px; height: 24px;
+  background: var(--focus); border: 3px solid #fff; border-radius: 50%; cursor: nwse-resize; touch-action: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .4);
+}
+.ov.sel .rh { display: block; }
+
+.ov-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.ov-list button {
+  min-height: 44px; padding: 0 14px; border: 2px solid var(--line); border-radius: 99px;
+  background: #fff; color: var(--ink); font: inherit; font-size: .95rem; font-weight: 800; cursor: pointer;
+}
+.ov-list button.on { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+.check { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-bottom: 8px; font-weight: 800; }
+.check input { width: 24px; height: 24px; accent-color: var(--brand-2); }
+.field input[type="range"] { min-height: 36px; padding: 0; border: 0; accent-color: var(--brand-2); }
+.field input[type="color"] { padding: 4px; cursor: pointer; }
+.corners { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.corners button {
+  min-height: 44px; border: 2px solid var(--line-soft); border-radius: var(--radius-sm);
+  background: #fff; color: var(--ink); font: inherit; font-weight: 800; cursor: pointer;
+}
+[hidden] { display: none !important; }
