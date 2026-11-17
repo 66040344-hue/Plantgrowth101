@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14432a">
+  <title>แต่งภาพ · Plant Growth Logger</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/compose.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html#/" data-icon="sprout">Plant Growth</a>
+  </header>
+
+  <main id="view" class="cmp">
+    <h1>แต่งภาพ</h1>
+    <p class="hint">ใส่ภาพเสริมและข้อความลงบนภาพหลัก ลากเพื่อเลือกตำแหน่ง แล้วบันทึกเข้าเครื่อง</p>
+
+    <section class="panel">
+      <div class="row">
+        <label class="field grow">ชื่อไฟล์ (ตรงกับไฟล์ที่ดาวน์โหลด)
+          <input id="fname" type="text" placeholder="เช่น T1P1" autocomplete="off">
+        </label>
+        <label class="field narrow">นามสกุล
+          <select id="fmt">
+            <option value="jpg">.jpg</option>
+            <option value="png">.png</option>
+          </select>
+        </label>
+      </div>
+      <label class="btn primary block" style="margin:0;position:relative">
+        <span data-icon="image"></span><span id="mainLabel">เลือกภาพหลัก (เลือกได้หลายภาพ)</span>
+        <input id="mainFile" class="vh" type="file" accept="image/*" multiple>
+      </label>
+      <div id="jobsBox" hidden>
+        <div class="field-label" style="margin-top:14px">ภาพที่กำลังทำ (กดเพื่อสลับ)</div>
+        <div id="jobs" class="ov-list" style="margin-top:0"></div>
+        <button id="delJob" class="btn sm danger" type="button" style="margin-top:10px"><span data-icon="trash"></span>เอาภาพนี้ออก</button>
+      </div>
+    </section>
+
+    <div class="cmp-grid">
+      <section class="cmp-stage-col">
+        <div id="empty" class="panel empty">
+          <span data-icon="image" class="ic-xl"></span>
+          <p><b>ยังไม่ได้เลือกภาพหลัก</b></p>
+          <p class="hint">กด “เลือกภาพหลัก” ด้านบนเพื่อเริ่ม</p>
+        </div>
+        <div id="stageWrap" class="stage-wrap" hidden>
+          <div id="stage" class="stage"><img id="mainImg" alt="" draggable="false"></div>
+        </div>
+      </section>
+
+      <aside class="cmp-side">
+        <section class="panel">
+          <h2>เพิ่มลงในภาพ</h2>
+          <div class="actions">
+            <label class="btn sm" style="position:relative">
+              <span data-icon="plus"></span>ภาพเสริม
+              <input id="addImg" class="vh" type="file" accept="image/*" multiple disabled>
+            </label>
+            <button id="addText" class="btn sm" type="button" disabled><span data-icon="plus"></span>ข้อความ</button>
+          </div>
+          <div id="ovList" class="ov-list"></div>
+          <p id="ovHint" class="hint" hidden>เลือกหลายภาพพร้อมกันได้ ลากเพื่อย้าย ลากมุมที่จุดเหลืองเพื่อปรับขนาด</p>
+        </section>
+
+        <section id="props" class="panel" hidden>
+          <div class="panel-head">
+            <h2 id="propsTitle">รายการที่เลือก</h2>
+            <button id="delOv" class="icon-btn danger labeled" type="button"><span data-icon="trash"></span>ลบ</button>
+          </div>
+
+          <div id="textProps">
+            <label class="field">ข้อความ
+              <textarea id="pText" rows="2"></textarea>
+            </label>
+            <div class="row">
+              <label class="field grow">สีตัวอักษร <input id="pColor" type="color"></label>
+              <label class="field grow">สีพื้นหลัง <input id="pBg" type="color"></label>
+            </div>
+            <label class="check"><input id="pBgOn" type="checkbox"> ใส่สีพื้นหลัง</label>
+          </div>
+
+          <label class="field">ขนาด <input id="pSize" type="range"></label>
+
+          <label class="check"><input id="pBorder" type="checkbox"> มีกรอบ</label>
+          <div id="borderProps" class="row">
+            <label class="field grow">ความหนากรอบ <input id="pBw" type="range" min="1" max="20" step="1"></label>
+            <label class="field narrow">สีกรอบ <input id="pBc" type="color"></label>
+          </div>
+
+          <div class="field-label">ตำแหน่งด่วน</div>
+          <div class="corners">
+            <button type="button" data-corner="tl">↖ ซ้ายบน</button>
+            <button type="button" data-corner="tr">↗ ขวาบน</button>
+            <button type="button" data-corner="bl">↙ ซ้ายล่าง</button>
+            <button type="button" data-corner="br">↘ ขวาล่าง</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <div class="actionbar">
+      <button id="save" class="btn primary big grow" type="button" disabled><span data-icon="download"></span>บันทึกภาพนี้</button>
+      <button id="saveAll" class="btn big grow" type="button" disabled><span data-icon="download"></span>บันทึกทั้งหมด</button>
+    </div>
+  </main>
+
+  <nav class="nav">
+    <a href="index.html#/" data-icon="home"><span>หน้าหลัก</span></a>
+    <a href="index.html#/queue" data-icon="upload"><span>คิวอัปโหลด</span></a>
+    <a href="compose.html" class="active" data-icon="image"><span>แต่งภาพ</span></a>
+    <a href="index.html#/settings" data-icon="sliders"><span>ตั้งค่า</span></a>
+  </nav>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="js/icons.js"></script>
+  <script src="js/compose.js"></script>
+</body>
+</html>
